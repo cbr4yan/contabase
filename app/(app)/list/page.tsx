@@ -3,9 +3,16 @@ import {
   activeCategories,
   allCategories,
   monthTransactions,
+  rangeTransactions,
   summarize,
 } from "@/lib/queries"
-import { amountColor, currentMonth, isMonth, money } from "@/lib/config"
+import {
+  amountColor,
+  currentMonth,
+  isDate,
+  isMonth,
+  money,
+} from "@/lib/config"
 import { FilterBar } from "@/components/filter-bar"
 import { TransactionList } from "@/components/transaction-list"
 
@@ -16,12 +23,18 @@ export default async function ListPage({
 }) {
   const user = await requireUser()
   const sp = await searchParams
-  const month = isMonth(sp.month) ? sp.month : currentMonth()
   const kind = sp.kind
   const cat = sp.cat
 
+  // Range mode when both ?from and ?to are valid dates; otherwise month mode.
+  const from = isDate(sp.from) ? sp.from : null
+  const to = isDate(sp.to) ? sp.to : null
+  const month = isMonth(sp.month) ? sp.month : currentMonth()
+
   const [all, active, everything] = await Promise.all([
-    monthTransactions(user.companyId, month),
+    from && to
+      ? rangeTransactions(user.companyId, from <= to ? from : to, from <= to ? to : from)
+      : monthTransactions(user.companyId, month),
     activeCategories(user.companyId),
     allCategories(user.companyId),
   ])

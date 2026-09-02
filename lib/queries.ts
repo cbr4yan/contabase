@@ -1,4 +1,4 @@
-import { and, desc, eq, like } from "drizzle-orm"
+import { and, desc, eq, gte, like, lte, type SQL } from "drizzle-orm"
 
 import { db } from "./db"
 import { categories, transactions, users } from "./schema"
@@ -29,7 +29,7 @@ export function companyMembers(companyId: string) {
     .orderBy(users.name)
 }
 
-export function monthTransactions(companyId: string, month: string) {
+function txQuery(companyId: string, dateWhere: SQL | undefined) {
   return db
     .select({
       id: transactions.id,
@@ -45,13 +45,21 @@ export function monthTransactions(companyId: string, month: string) {
     })
     .from(transactions)
     .leftJoin(categories, eq(categories.id, transactions.categoryId))
-    .where(
-      and(
-        eq(transactions.companyId, companyId),
-        like(transactions.occurredOn, `${month}%`)
-      )
-    )
+    .where(and(eq(transactions.companyId, companyId), dateWhere))
     .orderBy(desc(transactions.occurredOn), desc(transactions.createdAt))
+}
+
+/** `month` is YYYY-MM. occurred_on is stored as YYYY-MM-DD text, so a prefix
+ *  LIKE and lexical range comparisons both work. */
+export function monthTransactions(companyId: string, month: string) {
+  return txQuery(companyId, like(transactions.occurredOn, `${month}%`))
+}
+
+export function rangeTransactions(companyId: string, from: string, to: string) {
+  return txQuery(
+    companyId,
+    and(gte(transactions.occurredOn, from), lte(transactions.occurredOn, to))
+  )
 }
 
 export type TxRow = Awaited<ReturnType<typeof monthTransactions>>[number]

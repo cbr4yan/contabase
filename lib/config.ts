@@ -49,3 +49,5 @@ export const currentMonth = () => today().slice(0, 7)
 export const monthOf = (isoDate: string) => isoDate.slice(0, 7) // YYYY-MM
 export const isMonth = (v: unknown): v is string =>
   typeof v === "string" && /^\d{4}-\d{2}$/.test(v)
+export const isDate = (v: unknown): v is string =>
+  typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v)

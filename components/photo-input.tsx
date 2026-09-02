@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { RiCameraLine, RiCloseLine } from "@remixicon/react"
+import { RiImageAddLine, RiCloseLine } from "@remixicon/react"
 
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -88,17 +88,17 @@ export function PhotoInput({ existingKey }: { existingKey?: string | null }) {
           onClick={() => inputRef.current?.click()}
           className="h-11 w-full gap-2"
         >
-          <RiCameraLine className="size-4" />
+          <RiImageAddLine className="size-4" />
           {busy ? "Procesando…" : "Añadir foto"}
         </Button>
       )}
 
+      {/* no `capture` attr: lets the user choose camera *or* gallery */}
       <input
         ref={inputRef}
         type="file"
         name="photo"
         accept="image/*"
-        capture="environment"
         onChange={onChange}
         className="hidden"
       />
