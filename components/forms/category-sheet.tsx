@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import { FormSelect } from "@/components/form-select"
 import { SubmitButton } from "@/components/submit-button"
 import type { Category } from "@/lib/schema"
 
@@ -68,15 +68,15 @@ export function CategorySheet({
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="cat-kind">Tipo</Label>
-              <NativeSelect
-                className="w-full [&_select]:h-11 [&_select]:text-base"
+              <FormSelect
                 id="cat-kind"
                 name="kind"
                 defaultValue={category?.kind ?? "expense"}
-              >
-                <NativeSelectOption value="expense">Gasto</NativeSelectOption>
-                <NativeSelectOption value="income">Ingreso</NativeSelectOption>
-              </NativeSelect>
+                options={[
+                  { label: "Gasto", value: "expense" },
+                  { label: "Ingreso", value: "income" },
+                ]}
+              />
             </div>
             {category && (
               <Button

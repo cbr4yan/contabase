@@ -20,6 +20,13 @@ export const ROLE_LABELS: Record<"admin" | "employee", string> = {
   employee: "Empleado",
 }
 
+// Red for gastos, green for ingresos. Keep +/- signs so colour is never the
+// only signal.
+export const amountColor = (kind: "expense" | "income") =>
+  kind === "income"
+    ? "text-green-600 dark:text-green-500"
+    : "text-red-600 dark:text-red-500"
+
 // PIN lockout. 4 digits = 10k combos, so the lockout is the real defense.
 export const MAX_ATTEMPTS = 5
 export const LOCK_MINUTES = 15 // ponytail: flat lockout; add escalating tiers if abused

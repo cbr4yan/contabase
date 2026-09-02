@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import { FormSelect } from "@/components/form-select"
 import { SubmitButton } from "@/components/submit-button"
 import { ROLE_LABELS } from "@/lib/config"
 import type { User } from "@/lib/schema"
@@ -133,15 +133,15 @@ export function MemberSheet({
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="m-role">Rol</Label>
-                <NativeSelect
-                  className="w-full [&_select]:h-11 [&_select]:text-base"
+                <FormSelect
                   id="m-role"
                   name="role"
                   defaultValue="employee"
-                >
-                  <NativeSelectOption value="employee">Empleado</NativeSelectOption>
-                  <NativeSelectOption value="admin">Administrador</NativeSelectOption>
-                </NativeSelect>
+                  options={[
+                    { label: "Empleado", value: "employee" },
+                    { label: "Administrador", value: "admin" },
+                  ]}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="m-pin">PIN temporal</Label>

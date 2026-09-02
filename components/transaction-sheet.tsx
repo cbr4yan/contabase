@@ -13,11 +13,8 @@ import {
 } from "@/components/ui/drawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { FormSelect } from "@/components/form-select"
 import { PhotoInput } from "@/components/photo-input"
 import { SubmitButton } from "@/components/submit-button"
 import { KIND_LABELS, METHOD_LABELS, METHODS, today } from "@/lib/config"
@@ -47,6 +44,9 @@ export function TransactionSheet({
   const [error, setError] = React.useState<string>()
   const [kind, setKind] = React.useState<Kind>(tx?.kind ?? "expense")
   const [method, setMethod] = React.useState<Method>(tx?.method ?? "cash")
+  const [categoryId, setCategoryId] = React.useState<string | null>(
+    tx?.categoryId ?? null
+  )
 
   async function onSubmit(formData: FormData) {
     const res = await saveTransaction(formData)
@@ -60,6 +60,8 @@ export function TransactionSheet({
   }
 
   const options = categories.filter((c) => c.kind === kind)
+  // If the picked category doesn't belong to the current kind, show none.
+  const catValue = options.some((c) => c.id === categoryId) ? categoryId : null
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -84,11 +86,18 @@ export function TransactionSheet({
               spacing={0}
               className="w-full"
             >
-              {(["expense", "income"] as const).map((k) => (
-                <ToggleGroupItem key={k} value={k} className="h-11 flex-1">
-                  {KIND_LABELS[k]}
-                </ToggleGroupItem>
-              ))}
+              <ToggleGroupItem
+                value="expense"
+                className="h-11 flex-1 aria-pressed:border-red-600 aria-pressed:bg-red-600 aria-pressed:text-white aria-pressed:hover:bg-red-600"
+              >
+                {KIND_LABELS.expense}
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="income"
+                className="h-11 flex-1 aria-pressed:border-green-600 aria-pressed:bg-green-600 aria-pressed:text-white aria-pressed:hover:bg-green-600"
+              >
+                {KIND_LABELS.income}
+              </ToggleGroupItem>
             </ToggleGroup>
 
             <div className="space-y-1.5">
@@ -107,19 +116,14 @@ export function TransactionSheet({
 
             <div className="space-y-1.5">
               <Label htmlFor="categoryId">Categoría</Label>
-              <NativeSelect
-                className="w-full [&_select]:h-11 [&_select]:text-base"
+              <FormSelect
                 id="categoryId"
                 name="categoryId"
-                defaultValue={tx?.categoryId ?? ""}
-              >
-                <NativeSelectOption value="">Sin categoría</NativeSelectOption>
-                {options.map((c) => (
-                  <NativeSelectOption key={c.id} value={c.id}>
-                    {c.name}
-                  </NativeSelectOption>
-                ))}
-              </NativeSelect>
+                placeholder="Sin categoría"
+                value={catValue}
+                onValueChange={setCategoryId}
+                options={options.map((c) => ({ label: c.name, value: c.id }))}
+              />
             </div>
 
             <div className="space-y-1.5">

@@ -1,6 +1,6 @@
 import { requireUser } from "@/lib/session"
 import { monthTransactions, summarize } from "@/lib/queries"
-import { LOCALE, currentMonth, money } from "@/lib/config"
+import { LOCALE, amountColor, currentMonth, money } from "@/lib/config"
 import { cn } from "@/lib/utils"
 import { Progress } from "@/components/ui/progress"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
@@ -48,13 +48,15 @@ export default async function HomePage() {
         <div className="flex gap-4 text-sm">
           <span>
             <span className="text-muted-foreground">Ingresos </span>
-            <span className="tabular-nums text-green-600 dark:text-green-500">
+            <span className={cn("tabular-nums", amountColor("income"))}>
               {money(s.income)}
             </span>
           </span>
           <span>
             <span className="text-muted-foreground">Gastos </span>
-            <span className="tabular-nums">{money(s.expense)}</span>
+            <span className={cn("tabular-nums", amountColor("expense"))}>
+              {money(s.expense)}
+            </span>
           </span>
         </div>
       </header>
@@ -84,7 +86,7 @@ export default async function HomePage() {
                 <Progress
                   value={(g.cents / max) * 100}
                   aria-hidden
-                  className="mt-1"
+                  className="mt-1 [&_[data-slot=progress-indicator]]:bg-red-600 dark:[&_[data-slot=progress-indicator]]:bg-red-500"
                 />
               </li>
             ))}

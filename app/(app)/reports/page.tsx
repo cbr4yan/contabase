@@ -1,6 +1,14 @@
 import { requireUser } from "@/lib/session"
 import { monthTransactions, summarize } from "@/lib/queries"
-import { KIND_LABELS, METHOD_LABELS, currentMonth, isMonth, money } from "@/lib/config"
+import {
+  KIND_LABELS,
+  METHOD_LABELS,
+  amountColor,
+  currentMonth,
+  isMonth,
+  money,
+} from "@/lib/config"
+import { cn } from "@/lib/utils"
 import { MonthPicker } from "@/components/month-picker"
 import { Card, CardContent, CardDescription } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -34,9 +42,13 @@ export default async function ReportsPage({
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        <Stat label="Ingresos" value={money(s.income)} />
-        <Stat label="Gastos" value={money(s.expense)} />
-        <Stat label="Balance" value={money(s.balance)} />
+        <Stat label="Ingresos" value={money(s.income)} tone={amountColor("income")} />
+        <Stat label="Gastos" value={money(s.expense)} tone={amountColor("expense")} />
+        <Stat
+          label="Balance"
+          value={money(s.balance)}
+          tone={s.balance < 0 ? amountColor("expense") : undefined}
+        />
       </div>
 
       <section className="space-y-3">
@@ -65,7 +77,12 @@ export default async function ReportsPage({
               <Progress
                 value={(r.cents / maxCat) * 100}
                 aria-hidden
-                className="mt-1"
+                className={cn(
+                  "mt-1",
+                  r.kind === "income"
+                    ? "[&_[data-slot=progress-indicator]]:bg-green-600 dark:[&_[data-slot=progress-indicator]]:bg-green-500"
+                    : "[&_[data-slot=progress-indicator]]:bg-red-600 dark:[&_[data-slot=progress-indicator]]:bg-red-500"
+                )}
               />
             </div>
           ))
@@ -90,12 +107,20 @@ export default async function ReportsPage({
   )
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({
+  label,
+  value,
+  tone,
+}: {
+  label: string
+  value: string
+  tone?: string
+}) {
   return (
     <Card size="sm" className="text-center">
       <CardContent>
         <CardDescription className="text-[10px]">{label}</CardDescription>
-        <p className="text-sm font-semibold tabular-nums">{value}</p>
+        <p className={cn("text-sm font-semibold tabular-nums", tone)}>{value}</p>
       </CardContent>
     </Card>
   )

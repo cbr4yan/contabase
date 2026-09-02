@@ -16,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { TransactionSheet } from "@/components/transaction-sheet"
-import { LOCALE, METHOD_LABELS, money } from "@/lib/config"
+import { LOCALE, METHOD_LABELS, amountColor, money } from "@/lib/config"
 import { cn } from "@/lib/utils"
 import type { Category } from "@/lib/schema"
 import type { TxRow } from "@/lib/queries"
@@ -89,7 +89,7 @@ export function TransactionList({
                   <span
                     className={cn(
                       "shrink-0 text-sm font-semibold tabular-nums",
-                      r.kind === "income" && "text-green-600 dark:text-green-500"
+                      amountColor(r.kind)
                     )}
                   >
                     {r.kind === "income" ? "+" : "−"}

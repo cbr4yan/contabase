@@ -5,7 +5,7 @@ import {
   monthTransactions,
   summarize,
 } from "@/lib/queries"
-import { currentMonth, isMonth, money } from "@/lib/config"
+import { amountColor, currentMonth, isMonth, money } from "@/lib/config"
 import { FilterBar } from "@/components/filter-bar"
 import { TransactionList } from "@/components/transaction-list"
 
@@ -43,10 +43,8 @@ export default async function ListPage({
           {n} {n === 1 ? "movimiento" : "movimientos"}
         </span>
         <span className="tabular-nums">
-          <span className="text-green-600 dark:text-green-500">
-            +{money(s.income)}
-          </span>{" "}
-          · −{money(s.expense)}
+          <span className={amountColor("income")}>+{money(s.income)}</span>{" "}
+          <span className={amountColor("expense")}>−{money(s.expense)}</span>
         </span>
       </div>
       <TransactionList
