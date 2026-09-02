@@ -12,7 +12,7 @@ import { KINDS, METHODS } from "@/lib/config"
 export type TxState = { error?: string; ok?: boolean }
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
-const MAX_PHOTO_BYTES = 5_000_000
+const MAX_PHOTO_BYTES = 4_000_000
 
 function parseAmount(raw: string): number | null {
   let s = raw.trim().replace(/\s/g, "")

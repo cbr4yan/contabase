@@ -29,6 +29,11 @@ const LOCAL_DIR = join(process.cwd(), ".uploads")
 
 const localStorage: Storage = {
   async put(bytes, contentType) {
+    if (process.env.VERCEL) {
+      throw new Error(
+        "Photo storage: set the R2_* env vars — the local-filesystem fallback does not work on Vercel"
+      )
+    }
     const key = newKey(contentType)
     await mkdir(LOCAL_DIR, { recursive: true })
     await writeFile(join(LOCAL_DIR, key), bytes)
