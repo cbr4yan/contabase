@@ -2,9 +2,9 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { FormSelect } from "@/components/form-select"
-import { currentMonth } from "@/lib/config"
+import { MonthNav } from "@/components/month-nav"
 import type { Category } from "@/lib/schema"
 
 export function FilterBar({ categories }: { categories: Category[] }) {
@@ -19,35 +19,48 @@ export function FilterBar({ categories }: { categories: Category[] }) {
     router.replace(`${pathname}?${next.toString()}`)
   }
 
-  const month = params.get("month") ?? currentMonth()
+  const hasFilters = params.has("kind") || params.has("cat")
 
   return (
-    <div className="grid grid-cols-3 gap-2 border-b p-3">
-      <Input
-        type="month"
-        value={month}
-        onChange={(e) => set("month", e.target.value)}
-        className="h-9"
-      />
-      <FormSelect
-        className="h-9"
-        value={params.get("kind") ?? "all"}
-        onValueChange={(v) => set("kind", v)}
-        options={[
-          { label: "Todos", value: "all" },
-          { label: "Gastos", value: "expense" },
-          { label: "Ingresos", value: "income" },
-        ]}
-      />
-      <FormSelect
-        className="h-9"
-        value={params.get("cat") ?? "all"}
-        onValueChange={(v) => set("cat", v)}
-        options={[
-          { label: "Todas", value: "all" },
-          ...categories.map((c) => ({ label: c.name, value: c.id })),
-        ]}
-      />
+    <div className="space-y-2 border-b p-3">
+      <div className="flex items-center justify-between">
+        <MonthNav />
+        {hasFilters && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              const next = new URLSearchParams(params)
+              next.delete("kind")
+              next.delete("cat")
+              router.replace(`${pathname}?${next.toString()}`)
+            }}
+          >
+            Limpiar
+          </Button>
+        )}
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <FormSelect
+          className="h-9"
+          value={params.get("kind") ?? "all"}
+          onValueChange={(v) => set("kind", v)}
+          options={[
+            { label: "Todos", value: "all" },
+            { label: "Gastos", value: "expense" },
+            { label: "Ingresos", value: "income" },
+          ]}
+        />
+        <FormSelect
+          className="h-9"
+          value={params.get("cat") ?? "all"}
+          onValueChange={(v) => set("cat", v)}
+          options={[
+            { label: "Categoría", value: "all" },
+            ...categories.map((c) => ({ label: c.name, value: c.id })),
+          ]}
+        />
+      </div>
     </div>
   )
 }

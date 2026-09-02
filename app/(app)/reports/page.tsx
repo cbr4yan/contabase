@@ -9,7 +9,7 @@ import {
   money,
 } from "@/lib/config"
 import { cn } from "@/lib/utils"
-import { MonthPicker } from "@/components/month-picker"
+import { MonthNav } from "@/components/month-nav"
 import { Card, CardContent, CardDescription } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
@@ -38,7 +38,7 @@ export default async function ReportsPage({
     <div className="space-y-6 p-4">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold">Informes</h1>
-        <MonthPicker />
+        <MonthNav />
       </div>
 
       <div className="grid grid-cols-3 gap-2">
