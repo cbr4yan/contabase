@@ -56,11 +56,18 @@ function contentTypeFromKey(key: string) {
 }
 
 function r2Storage(): Storage {
-  const account = process.env.R2_ACCOUNT_ID!
-  const bucket = process.env.R2_BUCKET!
+  const account = process.env.R2_ACCOUNT_ID
+  const bucket = process.env.R2_BUCKET
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY
+  if (!account || !bucket || !accessKeyId || !secretAccessKey) {
+    throw new Error(
+      "R2 storage needs R2_ACCOUNT_ID, R2_BUCKET, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY"
+    )
+  }
   const client = new AwsClient({
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+    accessKeyId,
+    secretAccessKey,
     service: "s3",
     region: "auto",
   })
